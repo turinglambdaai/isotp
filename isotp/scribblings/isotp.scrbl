@@ -124,9 +124,28 @@ connection and is shared by the sender and receiver machines.
 
 @defthing[isotp-config? predicate?]{
 
-Predicate for configuration values; accessors
-(@racket[isotp-config-addressing], @racket[isotp-config-frame-size], …) are
-provided as well.
+Predicate for configuration values.  An accessor is provided for every
+configuration field (e.g. @racketid[isotp-config-addressing],
+@racketid[isotp-config-frame-size]), plus the @racket[config-fd?],
+@racket[config-prefix-size] and @racket[config-data-capacity] helpers below.
+}
+
+@defproc[(config-fd? [cfg isotp-config?]) boolean?]{
+
+Reports whether the configuration selects CAN FD frame sizes
+(@racket[#:frame-size] greater than @racket[8]).
+}
+
+@defproc[(config-prefix-size [cfg isotp-config?]) (integer-in 0 1)]{
+
+Number of payload bytes spent on addressing (one for extended and mixed
+modes, zero otherwise).
+}
+
+@defproc[(config-data-capacity [cfg isotp-config?]) exact-nonnegative-integer?]{
+
+Payload bytes available per full frame: the frame's CAN_DL minus the
+addressing prefix.
 }
 
 @section[#:tag "addressing"]{Addressing helpers}
