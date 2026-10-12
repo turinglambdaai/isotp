@@ -1,0 +1,23 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Racket
+        uses: Bogdanp/setup-racket@v1.12
+        with:
+          version: 'stable'
+      - name: Install package
+        run: raco pkg install --auto --link "$(pwd)"
+      - name: Run tests
+        run: raco test -p isotp
