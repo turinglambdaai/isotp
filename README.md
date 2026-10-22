@@ -1,5 +1,7 @@
 # isotp — ISO 15765-2 (ISO-TP) transport over CAN, in pure Racket
 
+**English** · [中文](README.zh-CN.md)
+
 [![CI](https://github.com/turinglambdaai/isotp/actions/workflows/ci.yml/badge.svg)](https://github.com/turinglambdaai/isotp/actions/workflows/ci.yml) [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
 `isotp` implements the **ISO 15765-2** network layer — known as **ISO-TP** or
