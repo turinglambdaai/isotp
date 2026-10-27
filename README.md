@@ -100,7 +100,7 @@ From the package root (Racket installed):
 raco pkg install --auto --link "$(pwd)"
 raco test -p isotp
 racket examples/quickstart.rkt
-raco setup -l isotp --check-pkg-deps
+raco setup --check-pkg-deps -l isotp
 ```
 
 The existing CI matrix tests Linux, macOS and Windows. No SocketCAN/driver
