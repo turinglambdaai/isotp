@@ -73,7 +73,7 @@ raco pkg install isotp
 raco pkg install --auto --link "$(pwd)"
 raco test -p isotp
 racket examples/quickstart.rkt
-raco setup -l isotp --check-pkg-deps
+raco setup --check-pkg-deps -l isotp
 ```
 
 CI 在 Linux、macOS、Windows 上执行检查。本包不提供 SocketCAN/驱动
