@@ -70,7 +70,7 @@ raco pkg install isotp
 在已安装 Racket 的仓库根目录执行：
 
 ```sh
-raco pkg install --auto --link .
+raco pkg install --auto --link "$(pwd)"
 raco test -p isotp
 racket examples/quickstart.rkt
 raco setup -l isotp --check-pkg-deps
