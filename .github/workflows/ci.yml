@@ -24,4 +24,4 @@ jobs:
       - name: Run transport-free documented quickstart
         run: racket examples/quickstart.rkt
       - name: Build Scribble API and verify dependencies
-        run: raco setup -l isotp --check-pkg-deps
+        run: raco setup --check-pkg-deps -l isotp
