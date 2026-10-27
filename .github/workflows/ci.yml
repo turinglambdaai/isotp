@@ -18,6 +18,10 @@ jobs:
         with:
           version: 'stable'
       - name: Install package
-        run: raco pkg install --auto --link "$(pwd)"
+        run: raco pkg install --auto --link .
       - name: Run tests
         run: raco test -p isotp
+      - name: Run transport-free documented quickstart
+        run: racket examples/quickstart.rkt
+      - name: Build Scribble API and verify dependencies
+        run: raco setup -l isotp --check-pkg-deps

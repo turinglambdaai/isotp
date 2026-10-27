@@ -37,23 +37,22 @@ raco pkg install isotp
 
 ## Usage
 
-A sender and a receiver meet over an idealized bus: every frame the sender
-emits is fed to the receiver, and every flow-control frame goes back.
-Timestamps are milliseconds on any monotonic clock.
+Start with a real, transport-free single-frame encode/decode round trip.
+Multi-frame transfer additionally requires a caller-driven bus loop, clock
+and flow-control handling; see the [full test loopback](isotp/test/isotp-test.rkt)
+and the Scribble API for `start-tx`, `rx-frame` and timeouts.
 
 ```racket
+#lang racket/base
 (require isotp)
 
-(define cfg (make-isotp-config #:block-size 8 #:stmin-ms 10))
-
-;; — sender side —
-(define-values (tx frames) (start-tx cfg #"hello ISO-TP world, this is long" 0))
-;; transmit each frame once its due-frame-ready-at time has come ...
-
-;; — receiver side —
-(define rx (make-rx-state cfg))
-(define-values (rx2 payload fc o) (rx-frame cfg rx (due-frame-bytes (car frames)) 0))
-;; fc holds the FC.CTS frame to transmit; o's status is 'running
+(define payload #"hello")
+(define encoded (isotp-frame->bytes (sf-frame payload)))
+;; Single-frame PCI length byte followed by data.
+(unless (bytes=? encoded (bytes #x05 104 101 108 108 111))
+  (error 'isotp-example "wrong single-frame bytes"))
+(unless (bytes=? (isotp-frame-data (bytes->isotp-frame encoded)) payload)
+  (error 'isotp-example "round trip failed"))
 ```
 
 Fixed 29-bit addressing (as used by emissions diagnostics, for example):
@@ -65,7 +64,7 @@ Fixed 29-bit addressing (as used by emissions diagnostics, for example):
 (isotp-tx-id cfg #t)  ; => #x18db33f1
 ```
 
-See [the documentation](doc/isotp.html) (or `raco docs isotp`) for the full
+See [the documentation](isotp/scribblings/isotp.scrbl) (or `raco docs isotp`) for the full
 API, including the frame codec and both state machines.
 
 ## Format notes
@@ -85,6 +84,29 @@ API, including the frame codec and both state machines.
   identifiers).
 - Timing is caller-driven; there is no internal thread. This keeps the
   machines deterministic and trivially testable.
+
+## API, tests and compatibility
+
+The [Scribble reference](isotp/scribblings/isotp.scrbl) is the authoritative
+description of the frame codec, seven address modes, state-machine returns,
+flow control and timing contracts. Its new single-frame example is evaluated
+as part of the document build. Run the
+[standalone quickstart](examples/quickstart.rkt) without a CAN interface.
+Do not confuse a passed codec smoke test with a real CAN/ECU qualification.
+
+From the package root (Racket installed):
+
+```sh
+raco pkg install --auto --link .
+raco test -p isotp
+racket examples/quickstart.rkt
+raco setup -l isotp --check-pkg-deps
+```
+
+The existing CI matrix tests Linux, macOS and Windows. No SocketCAN/driver
+binding or wall-clock scheduling is part of the package. Report issues with
+synthetic frame bytes, the selected addressing mode and Racket version at
+[GitHub Issues](https://github.com/turinglambdaai/isotp/issues).
 
 ## License
 

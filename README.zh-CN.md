@@ -23,21 +23,19 @@ raco pkg install isotp
 
 ## 用法
 
-发送方与接收方在一条理想化总线上对接：发送方发出的每一帧都送入接收方，每个流控帧都回传。时间戳为毫秒，可基于任意单调时钟。
+先运行无需 CAN 硬件的单帧编解码往返示例。多帧传输还需要调用方驱动总线循环、单调时钟和流控；完整过程见[真实状态机回环测试](isotp/test/isotp-test.rkt)及 Scribble 的 `start-tx`、`rx-frame` API。
 
 ```racket
+#lang racket/base
 (require isotp)
 
-(define cfg (make-isotp-config #:block-size 8 #:stmin-ms 10))
-
-;; — sender side —
-(define-values (tx frames) (start-tx cfg #"hello ISO-TP world, this is long" 0))
-;; transmit each frame once its due-frame-ready-at time has come ...
-
-;; — receiver side —
-(define rx (make-rx-state cfg))
-(define-values (rx2 payload fc o) (rx-frame cfg rx (due-frame-bytes (car frames)) 0))
-;; fc holds the FC.CTS frame to transmit; o's status is 'running
+(define payload #"hello")
+(define encoded (isotp-frame->bytes (sf-frame payload)))
+;; Single-frame PCI length byte followed by data.
+(unless (bytes=? encoded (bytes #x05 104 101 108 108 111))
+  (error 'isotp-example "wrong single-frame bytes"))
+(unless (bytes=? (isotp-frame-data (bytes->isotp-frame encoded)) payload)
+  (error 'isotp-example "round trip failed"))
 ```
 
 固定 29 位寻址（例如排放诊断所用）：
@@ -49,7 +47,7 @@ raco pkg install isotp
 (isotp-tx-id cfg #t)  ; => #x18db33f1
 ```
 
-完整 API（含帧编解码器与两个状态机）见[文档](doc/isotp.html)（或 `raco docs isotp`）。
+完整 API（含帧编解码器与两个状态机）见[文档](isotp/scribblings/isotp.scrbl)（或 `raco docs isotp`）。
 
 ## 格式说明
 
@@ -61,6 +59,27 @@ raco pkg install isotp
 
 - 不包含 CAN 驱动绑定；标识符过滤与分发由调用方负责（`isotp-tx-id` / `isotp-rx-id` 辅助函数负责计算标识符）。
 - 时序由调用方驱动，内部无线程。这使状态机保持确定性且极易测试。
+
+## API、测试与兼容性
+
+[Scribble API 手册](isotp/scribblings/isotp.scrbl)是帧编解码、
+七种寻址模式、状态机返回值、流控和时间契约的权威来源；
+单帧示例在文档构建期间真实执行。[独立入门示例](examples/quickstart.rkt)
+不依赖 CAN 适配器。编解码器测试通过不等于完成实车/ECU 联调。
+
+在已安装 Racket 的仓库根目录执行：
+
+```sh
+raco pkg install --auto --link .
+raco test -p isotp
+racket examples/quickstart.rkt
+raco setup -l isotp --check-pkg-deps
+```
+
+CI 在 Linux、macOS、Windows 上执行检查。本包不提供 SocketCAN/驱动
+绑定，也不负责真实时钟调度。反馈请在
+[GitHub Issues](https://github.com/turinglambdaai/isotp/issues)
+提交合成帧、寻址模式及 Racket 版本。
 
 ## 许可证
 
