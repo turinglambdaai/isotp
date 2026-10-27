@@ -97,7 +97,7 @@ Do not confuse a passed codec smoke test with a real CAN/ECU qualification.
 From the package root (Racket installed):
 
 ```sh
-raco pkg install --auto --link .
+raco pkg install --auto --link "$(pwd)"
 raco test -p isotp
 racket examples/quickstart.rkt
 raco setup -l isotp --check-pkg-deps
