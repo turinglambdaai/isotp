@@ -1,12 +1,12 @@
 #lang scribble/doc
 
 @(require scribble/manual
-          scribble/eval
+          scribble/example
           (for-label isotp
                      racket/base
                      racket/contract))
 
-@(define (make-eval) (make-base-eval #:lang 'racket/base '(isotp)))
+@(define isotp-eval (make-base-eval #:lang 'racket/base '(require isotp)))
 
 @title{isotp: ISO 15765-2 (ISO-TP) transport over CAN}
 @author{@(author+email "turinglambdaai" "turinglambdaai@users.noreply.github.com")}
@@ -47,20 +47,21 @@ the sender emits is fed to the receiver, and every flow-control frame the
 receiver emits goes back to the sender.  Timestamps are milliseconds on any
 monotonic clock.
 
-@racketblock[
-(require isotp)
+A complete, executable single-frame round trip:
 
-(define cfg (make-isotp-config #:block-size 8 #:stmin-ms 10))
-
-;; — sender side —
-(define-values (tx frames) (start-tx cfg #"hello ISO-TP world, this is long" 0))
-;; transmit each frame after its due-frame-ready-at time ...
-
-;; — receiver side —
-(define rx (make-rx-state cfg))
-(define-values (rx2 payload fc o) (rx-frame cfg rx (due-frame-bytes (car frames)) 0))
-;; fc holds the FC.CTS frame to transmit; o's status is 'running
+@examples[
+#:eval isotp-eval
+(define payload #"hello")
+(define frame (sf-frame payload))
+(isotp-frame->bytes frame)
+(isotp-frame-data (bytes->isotp-frame (isotp-frame->bytes frame)))
 ]
+
+Multi-frame transfers require a transport loop that feeds frames and FC
+responses at their scheduled timestamps. The package's
+@hyperlink["https://github.com/turinglambdaai/isotp/blob/main/isotp/test/isotp-test.rkt"]{loopback tests}
+exercise this behavior without bus hardware; frame parsing alone does not
+schedule or transport messages.
 
 @section{Configuration}
 
