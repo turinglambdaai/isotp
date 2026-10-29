@@ -2,7 +2,7 @@
 
 [English](README.md) · **中文**
 
-[![CI](https://github.com/turinglambdaai/isotp/actions/workflows/ci.yml/badge.svg)](https://github.com/turinglambdaai/isotp/actions/workflows/ci.yml) [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![CI](https://github.com/turlamai/isotp/actions/workflows/ci.yml/badge.svg)](https://github.com/turlamai/isotp/actions/workflows/ci.yml) [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
 `isotp` 以纯 Racket 实现 **ISO 15765-2** 网络层——即 **ISO-TP** 或 **DoCAN**：帧编解码器（SF / FF / CF / FC，包括 CAN FD 的转义编码）、带流控与发送节奏控制的发送方状态机，以及带重组与溢出处理的接收方状态机。它是 UDS（ISO 14229）、OBD-II（ISO 15031）等汽车诊断协议之下的传输层。
 
@@ -78,7 +78,7 @@ raco setup --check-pkg-deps -l isotp
 
 CI 在 Linux、macOS、Windows 上执行检查。本包不提供 SocketCAN/驱动
 绑定，也不负责真实时钟调度。反馈请在
-[GitHub Issues](https://github.com/turinglambdaai/isotp/issues)
+[GitHub Issues](https://github.com/turlamai/isotp/issues)
 提交合成帧、寻址模式及 Racket 版本。
 
 ## 许可证

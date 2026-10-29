@@ -10,7 +10,7 @@
 (define deps '("base" "rackunit-lib"))
 (define build-deps '("base" "scribble-lib" "racket-doc" "rackunit-lib"))
 (define pkg-desc "Pure-Racket ISO 15765-2 (ISO-TP) transport layer for CAN: frame codec, sender and receiver state machines, classic CAN and CAN FD")
-(define pkg-authors '("turinglambdaai"))
+(define pkg-authors '("turlamai"))
 (define license 'MIT)
 ;; Loading the scribblings as a "test" produces no tests and noise; skip it.
 (define test-omit-paths '("isotp/scribblings"))
