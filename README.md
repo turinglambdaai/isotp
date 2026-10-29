@@ -2,7 +2,7 @@
 
 **English** · [中文](README.zh-CN.md)
 
-[![CI](https://github.com/turinglambdaai/isotp/actions/workflows/ci.yml/badge.svg)](https://github.com/turinglambdaai/isotp/actions/workflows/ci.yml) [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![CI](https://github.com/turlamai/isotp/actions/workflows/ci.yml/badge.svg)](https://github.com/turlamai/isotp/actions/workflows/ci.yml) [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
 `isotp` implements the **ISO 15765-2** network layer — known as **ISO-TP** or
 **DoCAN** — in pure Racket: the frame codec (SF / FF / CF / FC, including the
@@ -106,7 +106,7 @@ raco setup --check-pkg-deps -l isotp
 The existing CI matrix tests Linux, macOS and Windows. No SocketCAN/driver
 binding or wall-clock scheduling is part of the package. Report issues with
 synthetic frame bytes, the selected addressing mode and Racket version at
-[GitHub Issues](https://github.com/turinglambdaai/isotp/issues).
+[GitHub Issues](https://github.com/turlamai/isotp/issues).
 
 ## License
 
